@@ -1,0 +1,62 @@
+server:
+  address: 0.0.0.0
+  port: 8080
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  datasource:
+    driverClassName: com.mysql.cj.jdbc.Driver
+    url: 'jdbc:mysql://34.89.114.242:3306/TTDS_group7'
+    username: 'root'
+    password: '!ttds2021'
+
+  sql:
+    init:
+      schema-locations: classpath:sql/initial.sql
+      username: 'root'
+      password: '!ttds2021'
+      mode: never
+
+  redis:
+    host: 'gc.caohongchuan.top'
+    port: 6379
+    jedis:
+      pool:
+        max-active: 8
+    database: 0
+    password: '!ttds2021'
+
+  data:
+    mongodb:
+      database: 'TTDS_group7'
+      host: '34.142.112.132'
+      port: 27017
+
+
+
+
+spark:
+  app:
+    name: searchapp
+  home: 192.168.36.200
+  master:
+    uri: spark://ubuntuserver1:7077
+  driver:
+    memory: 2g
+    maxResultSize: 41
+  worker:
+    memory: 1g
+  #cores 5  、num 8 、memory 5g  才是最完美的，报错，加参数限制
+  executor:
+    cores: 1
+    memory: 1g
+    heartbeatInterval: 1000000
+  num:
+    executors: 1
+  network:
+    timeout: 1474830
+  rpc:
+    message:
+      maxSize: 1024

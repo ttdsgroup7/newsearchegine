@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="newsrecommand" />
+        <module name="searchengine" />
+        <module name="sparktfidf" />
+        <module name="commonutil" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="oauth2SSOServer" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="commonutil" options="-parameters" />
+      <module name="newsrecommand" options="-parameters" />
+      <module name="oauth2SSOServer" options="-parameters" />
+      <module name="searchengine" options="-parameters" />
+      <module name="sparktfidf" options="" />
+    </option>
+  </component>
+</project>
