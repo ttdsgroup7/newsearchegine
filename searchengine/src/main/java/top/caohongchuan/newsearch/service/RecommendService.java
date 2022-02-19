@@ -12,6 +12,7 @@ import top.caohongchuan.newsearch.dao.RecommendationsDao;
 import top.caohongchuan.newsearch.dao.UsersDao;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -47,7 +48,10 @@ public class RecommendService {
 
         List<String> docsIdFromUBR = recommendationsDao.queryRecUsedNews(userId, preDate);
         // obtain news info from news table
-        List<NewsItem> recommendNews = newsRetrieve.getNews(docsIdFromUBR);
+        List<NewsItem> recommendNews=new ArrayList<>();
+        if(docsIdFromUBR != null && docsIdFromUBR.size() != 0){
+            recommendNews = newsRetrieve.getNews(docsIdFromUBR);
+        }
         ResponseNewsResult responseNewsResult = new ResponseNewsResult();
         responseNewsResult.setNewsarray(recommendNews);
         return responseNewsResult;
