@@ -78,6 +78,6 @@ public class SpellCorrectionService {
             }
         }
 
-        return res.toString().replaceAll("window\\[(.*?),(.*?)]","WINDOW\\[$1,$2\\]").replaceAll("window\\[(.*?),(.*?),(.*?)]","WINDOW\\[$1,$2,$3\\]").strip();
+        return res.toString().replaceAll("window\\[(.*?),(.*?)","WINDOW\\[$1,$2\\]").replaceAll("window\\[(.*?),(.*?),(.*?)","WINDOW\\[$1,$2,$3\\]").replaceAll("\"(.*?)\"", "$1").strip();
     }
 }
