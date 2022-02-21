@@ -57,7 +57,7 @@ public class SpellCorrectionService {
             ) {
 
                 // error
-                if (!(CorrectionService.term_cnt.containsKey(to_handle[i]))) {
+                if (!(CorrectionService.term_cnt.containsKey(to_handle[i])) && (to_handle[i].charAt(0)!='\"') ) {
                     // edit distance 1
                     HashSet<String> candi = corr.editDis1(to_handle[i]);
                     HashSet<String> candi2 = new HashSet<>(candi);
