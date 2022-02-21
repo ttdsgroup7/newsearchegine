@@ -28,6 +28,12 @@ spring:
     database: 0
     password: '!ttds2021'
 
+  redis2:
+    host: 'gc.caohongchuan.top'
+    port: 6379
+    database: 1
+    password: '!ttds2021'
+
   data:
     mongodb:
       database: 'TTDS_group7'

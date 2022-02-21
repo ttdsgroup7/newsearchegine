@@ -1,15 +1,20 @@
 package top.caohongchuan.newsearch.tools;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
+
+import java.util.Arrays;
 
 public class MongoDBTool {
 
     private static MongoClient mongoClient;
 
     public static MongoDatabase getMongoDBConnection(){
-        mongoClient = new MongoClient("34.142.112.132", 27017);
-        MongoDatabase mongoDatabase = mongoClient.getDatabase("TTDS_group7");
+        MongoCredential credential = MongoCredential.createCredential("ttds", "ttds_group7", "!ttds2021".toCharArray());
+        mongoClient = new MongoClient(new ServerAddress("34.142.112.132", 27017), Arrays.asList(credential));
+        MongoDatabase mongoDatabase = mongoClient.getDatabase("ttds_group7");
         return mongoDatabase;
     }
 

@@ -1,9 +1,6 @@
 package top.caohongchuan.newsrecommand.dao;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import top.caohongchuan.commonutil.datatypes.NewsFrequency;
 import top.caohongchuan.commonutil.datatypes.RecommendationItem;
 import top.caohongchuan.commonutil.datatypes.UserNewsNum;
@@ -41,4 +38,7 @@ public interface RecommendationsDao {
 
     @Select("select news_id,count(*) as visitNums from newslogs where view_time>#{timestamp} group by news_id order by visitNums,news_id desc limit 0,#{limitNum}")
     List<NewsFrequency> queryhotNewsList(@Param("limitNum") int limitNum, @Param("timestamp") Timestamp timestamp);
+
+    @Delete("delete from recommendations where derive_time<#{timestamp}")
+    void deleteExpiry(@Param("timestamp") Timestamp timestamp);
 }

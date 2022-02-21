@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 @ApiModel(description = "Store News List")
 public class ResponseNewsResult {
+    @ApiModelProperty("Account id")
+    private int userId;
     @ApiModelProperty("News Array")
     private List<NewsItem> newsarray;
     @ApiModelProperty("Correct Array")

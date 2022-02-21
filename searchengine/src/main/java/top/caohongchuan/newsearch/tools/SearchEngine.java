@@ -2,6 +2,7 @@ package top.caohongchuan.newsearch.tools;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import top.caohongchuan.commonutil.datatypes.PostExprResult;
 import top.caohongchuan.newsearch.dao.TFIDF;
 
 import java.util.*;
@@ -42,8 +43,10 @@ public class SearchEngine {
      * @param postexpr
      * @return
      */
-    public ArrayList<String> docIdFromPostExpr(ArrayList<String> postexpr) {
+    public PostExprResult docIdFromPostExpr(ArrayList<String> postexpr) {
         LinkedList<NewsResult> stack = new LinkedList<>();
+        ArrayList<String> wordIndex = new ArrayList<>();
+        PostExprResult postExprResult = new PostExprResult();
         try {
             for (String expr : postexpr) {
                 if (expr.equals("OR")) {
@@ -60,12 +63,14 @@ public class SearchEngine {
                 } else if (expr.length() >= 6 && expr.substring(0, 6).equals("WINDOW")) {
                     stack.addLast(this.windowOper(expr));
                 } else {
+                    wordIndex.add(expr);
                     stack.addLast(new NewsResult(false, false, expr));
                 }
             }
         } catch (NoSuchElementException error) {
             throw error;
         }
+        postExprResult.setWordsIndex(wordIndex);
 
         if (stack.size() == 1) {
             NewsResult newsResult = stack.getLast();
@@ -73,7 +78,8 @@ public class SearchEngine {
             // if only one word
             if (!newsResult.apply) {
                 if (newsResult.word.equals("STOPWORD")) {
-                    return new ArrayList<String>();
+                    postExprResult.setNewsresponse(new ArrayList<>());
+                    return postExprResult;
                 }
                 newsResult.newsid = StrToDoutil.strToDouble(tfidf.getTFIDF(newsResult.word));
                 newsResult.apply = true;
@@ -93,9 +99,12 @@ public class SearchEngine {
             for (Map.Entry<String, Double> mapping : reslist) {
                 newsresponse.add(mapping.getKey());
             }
-            return newsresponse;
+
+            postExprResult.setNewsresponse(newsresponse);
+            return postExprResult;
         } else {
-            return new ArrayList<String>();
+            postExprResult.setNewsresponse(new ArrayList<>());
+            return postExprResult;
         }
 
     }
@@ -137,7 +146,6 @@ public class SearchEngine {
             result.newsid = wordtodoc1;
             return result;
         }
-
 
         // union two set
         Set<String> keyset1 = wordtodoc1.keySet();

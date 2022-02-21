@@ -1,6 +1,7 @@
 package top.caohongchuan.newsearch.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +16,8 @@ import java.util.*;
 public class TFIDF {
 
     @Autowired
-    private StringRedisTemplate stringredisTemplate;
+    @Qualifier("redis1StringRedisTemplate")
+    private StringRedisTemplate stringRedis1Template;
 
     /**
      * obtain word's tfidf value from redis
@@ -23,7 +25,7 @@ public class TFIDF {
      * @return tfidf map word's docid and value
      */
     public HashMap<String, String> getTFIDF(String word){
-        HashOperations<String, String, String> opsForHash = stringredisTemplate.opsForHash();
+        HashOperations<String, String, String> opsForHash = stringRedis1Template.opsForHash();
         String wordId = opsForHash.get("tfidf-2022", word);
         if (wordId == null) {
             return new HashMap<>();
