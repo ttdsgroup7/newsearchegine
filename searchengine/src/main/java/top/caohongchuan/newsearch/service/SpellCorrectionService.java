@@ -23,10 +23,13 @@ public class SpellCorrectionService {
     }
 
     public String checkQueryString(String qry) {
+        if (qry.length()==0)
+            return qry;
+        if ((qry.charAt(0)=='\"') && (qry.charAt(qry.length()-1)=='\"'))
+            return qry.replaceAll("\"(.*?)\"","$1").strip();
         String[] qrylist = qry.split(" ");
         ArrayList<String> thiskey = new ArrayList<>();
         StringBuilder s = new StringBuilder();
-
         for (String value : qrylist) {
             if (keyword.contains(value)) {
                 if (s.length() != 0) {
