@@ -27,13 +27,13 @@ public class SpellCorrectionService {
         ArrayList<String> thiskey = new ArrayList<>();
         StringBuilder s = new StringBuilder();
 
-        for (int i = 0; i < qrylist.length; i++) {
-            if (keyword.contains(qrylist[i])) {
+        for (String value : qrylist) {
+            if (keyword.contains(value)) {
                 if (s.length() != 0) {
                     s.append(" ");
-                    s.append(qrylist[i]);
+                    s.append(value);
                 } else {
-                    s.append(qrylist[i]);
+                    s.append(value);
                 }
             } else {
                 if (s.length() != 0) {
@@ -78,6 +78,6 @@ public class SpellCorrectionService {
             }
         }
 
-        return res.toString().strip();
+        return res.toString().replaceAll("window\\[(.*?),(.*?)]","WINDOW\\[$1,$2\\]").replaceAll("window\\[(.*?),(.*?),(.*?)]","WINDOW\\[$1,$2,$3\\]").strip();
     }
 }
