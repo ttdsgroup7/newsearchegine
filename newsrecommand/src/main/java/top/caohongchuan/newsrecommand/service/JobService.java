@@ -3,21 +3,20 @@ package top.caohongchuan.newsrecommand.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
-import top.caohongchuan.commonutil.datatypes.ResponseNewsResult;
 import top.caohongchuan.newsrecommand.UserBasedCollaborativeRecommender.MahoutUserBasedCollaborativeRecommender;
 import top.caohongchuan.newsrecommand.algorithms.RecommendKit;
 import top.caohongchuan.newsrecommand.contentbasedrecommend.ContentBasedRecommender;
 import top.caohongchuan.newsrecommand.dao.ContentBasedDao;
+import top.caohongchuan.newsrecommand.dao.RecommendationsDao;
 import top.caohongchuan.newsrecommand.hotrecommend.HotRecommender;
-
 
 import java.util.Date;
 import java.util.List;
 
 /**
  * Recommend service
+ *
  * @author Hongchuan CAO
  * @version 1.0
  */
@@ -37,6 +36,8 @@ public class JobService {
     ContentBasedDao contentBasedDao;
     @Autowired
     RecommendKit recommendKit;
+    @Autowired
+    RecommendationsDao recommendationsDao;
 
     boolean enableCF, enableCB, enableHR;
 
@@ -61,13 +62,13 @@ public class JobService {
         //让热点新闻推荐器预先生成今日的热点新闻
         hotRecommender.formTodayTopHotNewsList();
 
-        if (enableCF){
+        if (enableCF) {
             mahoutUserBasedCollaborativeRecommender.recommend(userID);
         }
-        if (enableCB){
+        if (enableCB) {
             contentBasedRecommender.recommend(userID);
         }
-        if (enableHR){
+        if (enableHR) {
             hotRecommender.recommend(userID);
         }
 
@@ -89,6 +90,10 @@ public class JobService {
      */
     public void executeInstantJobForAllUsers() {
         executeInstantJob(contentBasedDao.queryAllUserId());
+    }
+
+    public void deleteExpiryRecommendation() {
+        recommendationsDao.deleteExpiry(RecommendKit.getInRecDate(-1));
     }
 
     /**

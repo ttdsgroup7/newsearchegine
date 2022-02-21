@@ -1,6 +1,5 @@
 package top.caohongchuan.newsrecommand.UserBasedCollaborativeRecommender;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.common.FastByIDMap;
@@ -10,7 +9,6 @@ import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.model.JDBCDataModel;
 import org.apache.mahout.cf.taste.model.PreferenceArray;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.RecommendedItem;
@@ -27,7 +25,6 @@ import top.caohongchuan.newsrecommand.algorithms.RecommendKit;
 import top.caohongchuan.newsrecommand.dao.RecommendationsDao;
 import top.caohongchuan.newsrecommand.dao.UserBasedCRDao;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -61,12 +58,13 @@ public class MahoutUserBasedCollaborativeRecommender implements RecommendAlgorit
 
     /**
      * Process recommend for a group of users
+     *
      * @param users username list
      */
     @Override
     public void recommend(List<Integer> users) {
         log.info("CF start at " + new Date());
-        if(users.isEmpty()){
+        if (users.isEmpty()) {
             return;
         }
 
@@ -144,7 +142,9 @@ public class MahoutUserBasedCollaborativeRecommender implements RecommendAlgorit
                 }
             }
             // update recommend list in database
-            recommendationsDao.insertRecommend(reList);
+            if(!reList.isEmpty()){
+                recommendationsDao.insertRecommend(reList);
+            }
         } catch (TasteException e) {
             log.error("CB算法构造偏好对象失败！");
             e.printStackTrace();

@@ -5,13 +5,12 @@ import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Test {
-    public static void main(String[] args) {
-        redisTest();
-    }
 
     public static void mongoTest(){
         Map<String, Map<String, String>> word2doc2value = new HashMap<>();
@@ -34,5 +33,14 @@ public class Test {
         jedis.select(0);
         jedis.flushAll();
         jedis.close();
+    }
+
+    public static void main(String[] args) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        arrayList.add("1");
+        arrayList.add("2");
+        arrayList.add("3");
+        List<String> test = arrayList.subList(0,6);
+        System.out.println(test.size());
     }
 }

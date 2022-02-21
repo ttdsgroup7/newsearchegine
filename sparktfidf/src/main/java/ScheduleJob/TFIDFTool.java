@@ -87,7 +87,6 @@ public class TFIDFTool {
         String[] word2index = cvModel.vocabulary();
         Map<String, String> index2word = new HashMap<>();
         for (int i = 0; i < word2index.length; i++) {
-//            log.info(i + " " + word2index[i]);
             index2word.put(word2index[i], String.valueOf(i));
         }
 
@@ -102,18 +101,49 @@ public class TFIDFTool {
         // ========================================================================================================
 
 
+        Map<String, Map<String, String>> wordstf = new HashMap<>();
+        Dataset<Row> wordtfvalue = wordsTF.select("id", "tf");
+        List<Row> tfList = wordtfvalue.collectAsList();
+        for (Row row : tfList) {
+            String docId = String.valueOf(row.getLong(0));
+            SparseVector tfidfStr = (SparseVector) row.get(1);
+            int[] indices = tfidfStr.indices();
+            double[] tfValues = tfidfStr.values();
+            for (int i = 0; i < indices.length; i++) {
+                String wordId = String.valueOf(indices[i]);
+                String tfValue = String.valueOf(tfValues[i]);
+                // update word2doc2value
+                if (!wordstf.containsKey(wordId)) {
+                    wordstf.put(wordId, new HashMap<>());
+                }
+                wordstf.get(wordId).put(docId, tfValue);
+            }
+        }
+        // save tfidf in redis
+        try {
+            Jedis jedis = pool.getResource();
+            jedis.select(2);
+            Pipeline pipeline = jedis.pipelined();
+            for (Map.Entry<String, Map<String, String>> entry : wordstf.entrySet()) {
+                String word = entry.getKey();
+                pipeline.hmset(String.valueOf(word), entry.getValue());
+            }
+            pipeline.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         // calculate document frequency and tfidf
         IDF idf = new IDF().setInputCol("tf").setOutputCol("tfidf");
         IDFModel idfModel = idf.fit(wordsTF);
         Dataset<Row> tfidf = idfModel.transform(wordsTF);
-
 
         // ================================== save tfidf value in redis =======================================
         // Format tfidf into Map
         Map<String, Map<String, String>> word2doc2value = new HashMap<>();
         Map<String, Map<String, String>> doc2word2value = new HashMap<>();
 
-        Dataset<Row> tfidfUseful = tfidf.select("id", "tf");
+        Dataset<Row> tfidfUseful = tfidf.select("id", "tfidf");
 
         List<Row> tfidfList = tfidfUseful.collectAsList();
         for (Row row : tfidfList) {
@@ -139,13 +169,13 @@ public class TFIDFTool {
         // save tfidf in redis
         try {
             Jedis jedis = pool.getResource();
+            jedis.select(0);
             Pipeline pipeline = jedis.pipelined();
             for (Map.Entry<String, Map<String, String>> entry : word2doc2value.entrySet()) {
                 String word = entry.getKey();
                 pipeline.hmset(String.valueOf(word), entry.getValue());
             }
             pipeline.close();
-            jedis.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

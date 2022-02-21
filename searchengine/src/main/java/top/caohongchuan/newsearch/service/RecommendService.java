@@ -53,6 +53,7 @@ public class RecommendService {
             recommendNews = newsRetrieve.getNews(docsIdFromUBR);
         }
         ResponseNewsResult responseNewsResult = new ResponseNewsResult();
+        responseNewsResult.setUserId(userId);
         responseNewsResult.setNewsarray(recommendNews);
         return responseNewsResult;
     }

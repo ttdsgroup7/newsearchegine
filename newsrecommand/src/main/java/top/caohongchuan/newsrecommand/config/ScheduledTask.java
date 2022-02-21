@@ -14,6 +14,7 @@ public class ScheduledTask{
     @Scheduled(cron = "0 0 12 * * ?")
     public void scheduleFixedDelayTask() {
         jobService.JobSetter(true, true, true);
+        jobService.deleteExpiryRecommendation();
         jobService.executeInstantJobForAllUsers();
     }
 }
