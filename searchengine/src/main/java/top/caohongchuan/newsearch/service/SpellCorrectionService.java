@@ -23,10 +23,13 @@ public class SpellCorrectionService {
     }
 
     public String checkQueryString(String qry) {
+        if (qry.length()==0)
+            return qry;
+        if ((qry.charAt(0)=='\"') && (qry.charAt(qry.length()-1)=='\"'))
+            return qry.replaceAll("\"(.*?)\"","$1").strip();
         String[] qrylist = qry.split(" ");
         ArrayList<String> thiskey = new ArrayList<>();
         StringBuilder s = new StringBuilder();
-
         for (String value : qrylist) {
             if (keyword.contains(value)) {
                 if (s.length() != 0) {
@@ -57,7 +60,7 @@ public class SpellCorrectionService {
             ) {
 
                 // error
-                if (!(CorrectionService.term_cnt.containsKey(to_handle[i]))) {
+                if (!(CorrectionService.term_cnt.containsKey(to_handle[i])) && (to_handle[i].charAt(0)!='\"') ) {
                     // edit distance 1
                     HashSet<String> candi = corr.editDis1(to_handle[i]);
                     HashSet<String> candi2 = new HashSet<>(candi);
@@ -78,6 +81,6 @@ public class SpellCorrectionService {
             }
         }
 
-        return res.toString().replaceAll("window\\[(.*?),(.*?)]","WINDOW\\[$1,$2\\]").replaceAll("window\\[(.*?),(.*?),(.*?)]","WINDOW\\[$1,$2,$3\\]").strip();
+        return res.toString().replaceAll("window\\[(.*?),(.*?)","WINDOW\\[$1,$2\\]").replaceAll("window\\[(.*?),(.*?),(.*?)","WINDOW\\[$1,$2,$3\\]").replaceAll("\"(.*?)\"", "$1").strip();
     }
 }
