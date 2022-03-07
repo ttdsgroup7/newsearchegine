@@ -1,5 +1,7 @@
 package top.caohongchuan.newsearch.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.caohongchuan.commonutil.datatypes.NewsItem;
@@ -11,6 +13,7 @@ import top.caohongchuan.newsearch.tools.SearchEngine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SearchService {
@@ -26,7 +29,8 @@ public class SearchService {
     @Autowired
     QueryExtension queryExtension;
 
-    public ResponseNewsResult dealquery(String querystr, boolean extension){
+    public ResponseNewsResult dealquery(String querystr, boolean extension, int page, int pageSize){
+
         // deal with wrong word
         String rightQueryStr = spellCorrectionService.checkQueryString(querystr);
         // obtain post expression
@@ -37,7 +41,7 @@ public class SearchService {
         ArrayList<String> wordIndex = postExprResult.getWordsIndex();
 
         // obtain top 100
-        List<String> docidsLimited = docids.subList(0, Math.min(100, docids.size()));
+        List<String> docidsLimited = docids.subList(0, Math.min(1000, docids.size()));
         List<String> docidsExtension = docidsLimited;
         // use query extension to query again
         if(extension){
@@ -45,22 +49,15 @@ public class SearchService {
         }
         ResponseNewsResult responseNewsResult = new ResponseNewsResult();
         if (docidsExtension.isEmpty()) {
-            responseNewsResult.setNewsarray(new ArrayList<>());
+            responseNewsResult.setNewsarray(new PageInfo<>());
         }else{
+            PageHelper.startPage(page, pageSize);
             List<NewsItem> news = newsRetrieve.getNews(docidsExtension);
-            List<NewsItem> newsSorted = new ArrayList<>();
-            for(String docid : docidsExtension){
-                for(NewsItem newsItem : news){
-                    if(Long.parseLong(docid) == newsItem.getId()){
-                        newsSorted.add(newsItem);
-                        break;
-                    }
-                }
-            }
-            responseNewsResult.setNewsarray(newsSorted);
+            PageInfo<NewsItem> info = new PageInfo<>(news);
+            responseNewsResult.setNewsarray(info);
         }
         // if error, return the right query string
-        if(!rightQueryStr.equals(querystr)){
+        if(!rightQueryStr.toLowerCase(Locale.ROOT).equals(querystr.toLowerCase(Locale.ROOT))){
             responseNewsResult.setRightQueryString(rightQueryStr);
         }
         return responseNewsResult;

@@ -11,7 +11,7 @@ public class ScheduledTask{
     @Autowired
     JobService jobService;
 
-    @Scheduled(cron = "0 0 12 * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void scheduleFixedDelayTask() {
         jobService.JobSetter(true, true, true);
         jobService.deleteExpiryRecommendation();

@@ -8,7 +8,7 @@ spring:
       matching-strategy: ant-path-matcher
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: 'jdbc:mysql://34.89.114.242:3306/TTDS_group7'
+    url: 'jdbc:mysql://gc3.caohongchuan.top:3306/TTDS_group7'
     username: 'root'
     password: '!ttds2021'
 
@@ -37,8 +37,15 @@ spring:
   data:
     mongodb:
       database: 'TTDS_group7'
-      host: '34.142.112.132'
+      host: 'gc2.caohongchuan.top'
       port: 27017
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count==countSql
+  page-size-zero: true
 
 
 

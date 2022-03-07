@@ -1,5 +1,7 @@
 package top.caohongchuan.newsearch.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.caohongchuan.commonutil.datatypes.NewsItem;
@@ -34,12 +36,21 @@ public class ObtainDatasetsService {
         return relatedDatasetsDao.obtainTheme();
     }
 
-    public List<NewsItem> obtainNewsByCountry(String country) {
-        return relatedDatasetsDao.obtainNewsByCountry(country);
+    public List<String> obtainDownSug(String wordsug){
+        List<String> res = relatedDatasetsDao.obtainWordSug(wordsug);
+        return res;
     }
 
-    public List<NewsItem> obtainNewsByTheme(String theme) {
-        return relatedDatasetsDao.obtainNewsByTheme(theme);
+    public PageInfo<NewsItem> obtainNewsByCountry(String country, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<NewsItem> news = relatedDatasetsDao.obtainNewsByCountry(country);
+        return new PageInfo<>(news);
+    }
+
+    public PageInfo<NewsItem> obtainNewsByTheme(String theme, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<NewsItem> news = relatedDatasetsDao.obtainNewsByTheme(theme);
+        return new PageInfo<>(news);
     }
 
     public List<NewsItem> obtainNewsByTime(Timestamp start, Timestamp end) {

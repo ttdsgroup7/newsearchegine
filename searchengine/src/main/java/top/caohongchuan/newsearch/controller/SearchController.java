@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.net.ntp.TimeStamp;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -44,10 +42,21 @@ public class SearchController {
             @ApiImplicitParam(name = "extension", value = "Weather open extension query or not", dataTypeClass = Boolean.class, required = false)
     })
     @GetMapping("/querynews")
-    public ReturnJson<ResponseNewsResult> query(@RequestParam("query") String querystr, @RequestParam(name = "extension", defaultValue = "false") boolean extension) {
+    public ReturnJson<ResponseNewsResult> query(@RequestParam("query") String querystr, @RequestParam(name = "extension", defaultValue = "false") boolean extension, @RequestParam(name = "page") int page, @RequestParam(name = "pagesize") int pageSize) {
         try {
-            ResponseNewsResult responseNewsResult = searchService.dealquery(querystr, extension);
+            ResponseNewsResult responseNewsResult = searchService.dealquery(querystr, extension, page, pageSize);
             return ReturnJson.success(responseNewsResult);
+        } catch (Exception e) {
+            throw new BizException();
+        }
+    }
+
+    @ApiOperation("Obtain word suggesstion")
+    @ApiImplicitParam(name = "wordsug", value = "word input", dataTypeClass = String.class, required = false)
+    @GetMapping("/wordsug")
+    public ReturnJson getDownSuggestion(@RequestParam("wordsug")String wordSuggestion) {
+        try {
+            return ReturnJson.success(obtainDatasetsService.obtainDownSug(wordSuggestion));
         } catch (Exception e) {
             throw new BizException();
         }
@@ -87,30 +96,30 @@ public class SearchController {
 
     @ApiOperation("Obtain news by country")
     @GetMapping("/newsbycountry")
-    public ReturnJson getNewsByCountry(@RequestParam("country") String country){
+    public ReturnJson getNewsByCountry(@RequestParam("country") String country, @RequestParam(name = "page") int page, @RequestParam(name = "pagesize") int pageSize) {
         try {
-            return ReturnJson.success(obtainDatasetsService.obtainNewsByCountry(country));
-        }catch (Exception e){
+            return ReturnJson.success(obtainDatasetsService.obtainNewsByCountry(country, page, pageSize));
+        } catch (Exception e) {
             throw new BizException();
         }
     }
 
     @ApiOperation("Obtain news by theme")
     @GetMapping("/newsbytheme")
-    public ReturnJson getNewsByTheme(@RequestParam("theme") String theme){
+    public ReturnJson getNewsByTheme(@RequestParam("theme") String theme, @RequestParam(name = "page") int page, @RequestParam(name = "pagesize") int pageSize) {
         try {
-            return ReturnJson.success(obtainDatasetsService.obtainNewsByTheme(theme));
-        }catch (Exception e){
+            return ReturnJson.success(obtainDatasetsService.obtainNewsByTheme(theme, page, pageSize));
+        } catch (Exception e) {
             throw new BizException();
         }
     }
 
     @ApiOperation("Obtain news by time")
     @GetMapping("/newsbytime")
-    public ReturnJson getNewsByTime(@RequestParam("starttime")Timestamp start, @RequestParam("endtime") Timestamp end){
+    public ReturnJson getNewsByTime(@RequestParam("starttime") Timestamp start, @RequestParam("endtime") Timestamp end) {
         try {
             return ReturnJson.success(obtainDatasetsService.obtainNewsByTime(start, end));
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new BizException();
         }
     }
@@ -119,7 +128,7 @@ public class SearchController {
     public void initBinder(WebDataBinder binder, WebRequest request) {
 
         //转换日期
-        DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         binder.registerCustomEditor(Timestamp.class, new CustomDateEditor(dateFormat, true));// CustomDateEditor为自定义日期编辑器
     }
 

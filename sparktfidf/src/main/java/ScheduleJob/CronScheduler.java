@@ -10,7 +10,7 @@ public class CronScheduler {
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("cronTrigger")
                 //cron表达式 这里定义的是  在每天中午12点执行一次
-                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 12 * * ?"))
+                .withSchedule(CronScheduleBuilder.cronSchedule("0 0 2 * * ?"))
                 .build();
         SchedulerFactory factory = new StdSchedulerFactory();
         //创建调度器

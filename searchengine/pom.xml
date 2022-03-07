@@ -34,6 +34,7 @@
 			<version>2.6.2</version>
 		</dependency>
 
+
 		<dependency>
 			<groupId>top.caohongchuan</groupId>
 			<artifactId>commonutil</artifactId>

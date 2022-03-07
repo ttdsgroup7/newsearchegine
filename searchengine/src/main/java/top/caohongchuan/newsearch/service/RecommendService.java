@@ -1,5 +1,7 @@
 package top.caohongchuan.newsearch.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.caohongchuan.commonutil.ExceptionTypes.BizException;
@@ -31,7 +33,8 @@ public class RecommendService {
     @Autowired
     NewsRetrieve newsRetrieve;
 
-    public ResponseNewsResult getRecommendNews(UserInfo userInfo){
+    public ResponseNewsResult getRecommendNews(UserInfo userInfo, int page, int pageSize){
+        PageHelper.startPage(page, pageSize);
         // check username and password
         String username = userInfo.getUsername();
         String password = userInfo.getPassword();
@@ -54,7 +57,8 @@ public class RecommendService {
         }
         ResponseNewsResult responseNewsResult = new ResponseNewsResult();
         responseNewsResult.setUserId(userId);
-        responseNewsResult.setNewsarray(recommendNews);
+        PageInfo<NewsItem> info = new PageInfo<>(recommendNews);
+        responseNewsResult.setNewsarray(info);
         return responseNewsResult;
     }
 }
