@@ -53,8 +53,10 @@ public class ObtainDatasetsService {
         return new PageInfo<>(news);
     }
 
-    public List<NewsItem> obtainNewsByTime(Timestamp start, Timestamp end) {
-        return relatedDatasetsDao.obtainNewsByTime(start, end);
+    public PageInfo<NewsItem> obtainNewsByTime(Timestamp start, Timestamp end, int page, int pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<NewsItem> news = relatedDatasetsDao.obtainNewsByTime(start, end);
+        return new PageInfo<>(news);
     }
 
     public Map<String, Map<String, Integer>> obtainThemeCountry() {

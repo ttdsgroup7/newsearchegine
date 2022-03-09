@@ -30,7 +30,7 @@ public class RecommandController {
     @PostMapping("/renews")
     public ReturnJson<ResponseNewsResult> recommend(@RequestBody UserInfo userInfo) {
         try {
-            ResponseNewsResult responseNewsResult = recommendService.getRecommendNews(userInfo, 1, 100);
+            ResponseNewsResult responseNewsResult = recommendService.getRecommendNews(userInfo);
             return ReturnJson.success(responseNewsResult);
         } catch (BizException e) {
             throw e;

@@ -1,10 +1,8 @@
 package top.caohongchuan.newsearch.service;
 
 import com.alibaba.fastjson.JSON;
-import com.mongodb.client.MongoDatabase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import top.caohongchuan.newsearch.tools.MongoDBTool;
+import top.caohongchuan.newsearch.tools.JsonUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,13 +25,14 @@ public class CorrectionService {
     public static Integer total;
 
     public CorrectionService() {
-        MongoDatabase mongoTemplate = MongoDBTool.getMongoDBConnection();
-        term_cnt = JSON.parseObject(mongoTemplate.getCollection("term_count").find().first().toJson(), HashMap.class);
-        bi_cnt = JSON.parseObject(mongoTemplate.getCollection("bigram_count").find().first().toJson(), HashMap.class);
-        MongoDBTool.closeMongoDB();
+//        MongoDatabase mongoTemplate = MongoDBTool.getMongoDBConnection();
+//        term_cnt = JSON.parseObject(mongoTemplate.getCollection("term_count").find().first().toJson(), HashMap.class);
+//        bi_cnt = JSON.parseObject(mongoTemplate.getCollection("bigram_count").find().first().toJson(), HashMap.class);
+//        MongoDBTool.closeMongoDB();
 
-//        term_cnt = mongoDBOperation.getTermCnt();
-//        bi_cnt = mongoDBOperation.getBiCnt();
+        bi_cnt = JSON.parseObject(JsonUtil.readJsonFile("/static/bigram_count.json"), HashMap.class);
+        term_cnt = JSON.parseObject(JsonUtil.readJsonFile("/static/term_count.json"), HashMap.class);
+
 
         //http://norvig.com/ngrams/spell-errors.txt
         try {

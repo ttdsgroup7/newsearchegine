@@ -33,8 +33,8 @@ public class RecommendService {
     @Autowired
     NewsRetrieve newsRetrieve;
 
-    public ResponseNewsResult getRecommendNews(UserInfo userInfo, int page, int pageSize){
-        PageHelper.startPage(page, pageSize);
+    public ResponseNewsResult getRecommendNews(UserInfo userInfo){
+
         // check username and password
         String username = userInfo.getUsername();
         String password = userInfo.getPassword();
@@ -52,6 +52,8 @@ public class RecommendService {
         List<String> docsIdFromUBR = recommendationsDao.queryRecUsedNews(userId, preDate);
         // obtain news info from news table
         List<NewsItem> recommendNews=new ArrayList<>();
+
+        PageHelper.startPage(1, 200);
         if(docsIdFromUBR != null && docsIdFromUBR.size() != 0){
             recommendNews = newsRetrieve.getNews(docsIdFromUBR);
         }

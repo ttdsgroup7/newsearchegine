@@ -33,6 +33,10 @@ public class TFIDFTool {
         SparkSession spark = SparkSession
                 .builder()
                 .master("spark://ubuntuserver1:7077")
+//                .config("spark.executor.memory", "2g")
+//                .config("spark.driver.memory", "2g")
+//                .config("spark.memory.offHeap.enabled",true)
+//                .config("spark.memory.offHeap.size","2g")
                 .appName("TFIDF")
                 .getOrCreate();
         // reads news content from mysql

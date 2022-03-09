@@ -1,3 +1,5 @@
+server:
+  port: 7788
 
 spring:
   mvc:
@@ -26,6 +28,6 @@ newsrecommend:
   DEC_COEE: 0.1
   CFRecNum: 10
   CFValidDays: -5
-  beforeDays: -5
+  beforeDays: -30
   TOTAL_REC_NUM: 20
   HotNewsLimit: 30
