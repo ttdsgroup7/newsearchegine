@@ -72,11 +72,17 @@ public class HotRecommender implements RecommendAlgorithm {
         try {
             //获得已经预备为当前用户推荐的新闻若数目不足达不到单次的最低推荐数目要求，则用热点新闻补充
             List<UserNewsNum> tmpRecNumsList = recommendationsDao.queryResNumForUser(users, timestamp);
-            ArrayList<RecommendationItem> reList = new ArrayList<>();
+            HashMap<Integer, Integer> userNum = new HashMap<>();
+            for (UserNewsNum userNewsNum : tmpRecNumsList){
+                userNum.put(userNewsNum.getUser_id(), userNewsNum.getRecnums());
+            }
 
-            for (UserNewsNum usersNews : tmpRecNumsList) {
-                int userId = usersNews.getUser_id();
-                int tmpRecNums = usersNews.getRecnums();
+            ArrayList<RecommendationItem> reList = new ArrayList<>();
+            for (Integer userId : users) {
+                int tmpRecNums = 0;
+                if(userNum.containsKey(userId)){
+                    tmpRecNums = userNum.get(userId);
+                }
                 // calculate the number of news that should be added (delta)
                 int delta = Math.max(0, TOTAL_REC_NUM - tmpRecNums);
 
@@ -101,7 +107,9 @@ public class HotRecommender implements RecommendAlgorithm {
                 }
             }
             //insert and update recommendation table
-            recommendationsDao.insertRecommend(reList);
+            if (reList.size() > 0) {
+                recommendationsDao.insertRecommend(reList);
+            }
         } catch (Exception e) {
             throw new BizException();
         }

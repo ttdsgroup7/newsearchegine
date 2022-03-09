@@ -69,11 +69,6 @@ public class MahoutUserBasedCollaborativeRecommender implements RecommendAlgorit
         }
 
         try {
-//            MysqlDataSource dataSource = new MysqlDataSource();
-//            dataSource.setServerName("192.168.36.200:3306");
-//            dataSource.setUser("remote");
-//            dataSource.setPassword("123412chc");
-//            JDBCDataModel dataModel = new MySQLJDBCDataModel()
 
             // obtain the history (user_id => news_id with prefer_degree)
             List<NewsLogsItem> newslogList = userBasedCRDao.queryNewsLogsByUserId(users, RecommendKit.getInRecDate(CFValidDays));
@@ -126,9 +121,6 @@ public class MahoutUserBasedCollaborativeRecommender implements RecommendAlgorit
 //                recommendKit.filterReccedNews(hs, userid);
 
                 // 无可推荐新闻
-                if (hs == null) {
-                    continue;
-                }
                 if (hs.size() > CFRecNum) {
                     RecommendKit.removeOverNews(hs, CFRecNum);
                 }

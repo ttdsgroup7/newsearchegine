@@ -116,9 +116,9 @@ public class SearchController {
 
     @ApiOperation("Obtain news by time")
     @GetMapping("/newsbytime")
-    public ReturnJson getNewsByTime(@RequestParam("starttime") Timestamp start, @RequestParam("endtime") Timestamp end) {
+    public ReturnJson getNewsByTime(@RequestParam("starttime") Timestamp start, @RequestParam("endtime") Timestamp end, @RequestParam(name = "page") int page, @RequestParam(name = "pagesize") int pageSize) {
         try {
-            return ReturnJson.success(obtainDatasetsService.obtainNewsByTime(start, end));
+            return ReturnJson.success(obtainDatasetsService.obtainNewsByTime(start, end, page, pageSize));
         } catch (Exception e) {
             throw new BizException();
         }
